@@ -4,6 +4,7 @@
 //////////////////////////////////////////
 
 #include <iostream>
+#include <sstream>
 #include <algorithm>
 #include <set>
 #include <vector>
@@ -30,6 +31,47 @@ void PrintUnique(const T& begin, const T& end) {
 // 5.2
 //////////////////////////////////////////
 
+struct Message {
+
+public:
+	std::string _data{ "" };
+
+	Message(const std::string& str) : _data(str) {}
+
+	bool operator < (const Message& other) const { return _data.length() < other._data.length(); }
+	friend std::ostream& operator << (std::ostream& ostr, const Message& message) { return ostr << message._data; }
+};
+
+void TextSort() {
+
+	std::multiset<Message> result;
+
+	// Receiving user input
+	std::string sInput{ "" };
+	std::getline(std::cin, sInput);
+
+	std::string token;
+	std::string delimiter{ ". " };
+	size_t start = 0U;
+	size_t end = sInput.find(delimiter);
+
+	//	 Iterating tokens
+	while (end != std::string::npos) {
+
+		end = sInput.find(delimiter);
+		token = sInput.substr(start, end - start);
+
+		result.emplace(token);
+
+		end = sInput.find(delimiter, start);
+		sInput.erase(start, end + delimiter.size());
+	}
+
+	// Printing results
+	std::cout << "\nEntered messages:\n";
+	std::copy(result.begin(), result.end(), std::ostream_iterator<Message>(std::cout, "\n"));
+}
+
 
 int main() {
 
@@ -51,6 +93,8 @@ int main() {
 	//////////////////////////////////////////
 	// 5.2
 	//////////////////////////////////////////
+
+	TextSort();
 
 	return 0;
 }
